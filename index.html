@@ -12,6 +12,7 @@
             justify-content: flex-start;
             height: 100vh;
             margin: 0;
+			margin-top: 40px;
         }
         .container {
             text-align: center;
@@ -41,11 +42,54 @@
     
     <div class="container">
         <div class="input-group">
-            <input type="text" placeholder="Enter text here">
-            <button type="submit">Submit</button>
+            <input type="text" id="elementInput" placeholder="Enter chemical formula">
+            <button type="submit" onclick="calculateAtomicMass()">Submit</button>
         </div>
-        <div class="answer">Answer will appear here</div>
+        <div class="answer" id="result">Answer will appear here</div>
     </div>
+	<script>
+        // Atomic masses for elements based on the periodic table
+        const atomicMasses = {
+            H: 1.008, He: 4.0026, Li: 6.94, Be: 9.01, B: 10.81, C: 12.01, N: 14.01, O: 16.00, F: 19.00, Ne: 20.18,
+            Na: 22.99, Mg: 24.31, Al: 26.98, Si: 28.09, P: 30.97, S: 32.07, Cl: 35.45, Ar: 39.95, K: 39.10, Ca: 40.08,
+            Sc: 44.96, Ti: 47.87, V: 50.94, Cr: 52.00, Mn: 54.94, Fe: 55.85, Co: 58.93, Ni: 58.69, Cu: 63.55, Zn: 65.38,
+            Ga: 69.72, Ge: 72.63, As: 74.92, Se: 78.97, Br: 79.90, Kr: 83.80, Rb: 85.47, Sr: 87.62, Y: 88.91, Zr: 91.22,
+            Nb: 92.91, Mo: 95.95, Tc: 98, Ru: 101.1, Rh: 102.9, Pd: 106.4, Ag: 107.87, Cd: 112.4, In: 114.8, Sn: 118.71,
+            Sb: 121.76, Te: 127.6, I: 126.9, Xe: 131.29, Cs: 132.91, Ba: 137.33, La: 138.91, Ce: 140.12, Pr: 140.91,
+            Nd: 144.24, Pm: 145, Sm: 150.36, Eu: 151.96, Gd: 157.25, Tb: 158.93, Dy: 162.50, Ho: 164.93, Er: 167.26,
+            Tm: 168.93, Yb: 173.05, Lu: 174.97, Hf: 178.49, Ta: 180.95, W: 183.84, Re: 186.21, Os: 190.23, Ir: 192.22,
+            Pt: 195.08, Au: 196.97, Hg: 200.59, Tl: 204.38, Pb: 207.2, Bi: 208.98, Th: 232.04, Pa: 231.04, U: 238.03
+        };
 
+        // Function to calculate atomic mass from input string
+        function calculateAtomicMass() {
+            const input = document.getElementById('elementInput').value.trim();
+            
+            // Check if input contains any lowercase letter not following a capital letter
+            if (/[^A-Z][a-z]/.test(input)) {
+                document.getElementById('result').innerText = `Error: Invalid element format`;
+                return;
+            }
+
+            const elementRegex = /([A-Z][a-z]*)(\d*)/g;  // Regex to capture element symbols and optional numbers
+            let match;
+            let totalMass = 0;
+
+            while ((match = elementRegex.exec(input)) !== null) {
+                const element = match[1];  // The element symbol
+                const count = match[2] === "" ? 1 : parseInt(match[2], 10);  // If no number, default to 1
+
+                if (atomicMasses[element] !== undefined) {
+                    totalMass += atomicMasses[element] * count;
+                } else {
+                    document.getElementById('result').innerText = `Error: Unknown element ${element}`;
+                    return;
+                }
+            }
+
+            document.getElementById('result').innerText = `Total Atomic Mass: ${totalMass.toFixed(2)}`;
+        }
+    </script>
+	
 </body>
 </html>
